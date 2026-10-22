@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <!-- 微信分享摘要：使用业务名称和体验范围，避免把客户沟通稿显示成技术文件。 -->
+  <meta name="description" content="御健荟健康管理客户端体验 Demo：健康档案、服务进度、健康臻选与 AI 健康导航。">
+  <!-- 移动浏览器外观：统一顶部状态区域颜色并声明可作为移动网页运行。 -->
+  <meta name="theme-color" content="#fbfcf8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- Open Graph：为微信等聊天工具提供稳定的链接标题和摘要。 -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:title" content="御健荟健康管理 · 客户端体验 Demo">
+  <meta property="og:description" content="查看健康档案、服务进度、健康臻选与 AI 健康导航的移动端体验方案。">
+  <link rel="icon" href="data:,">
+  <title>御健荟健康管理 · 客户端体验 Demo</title>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    /* 页面基础：固定以移动端体验为核心，桌面端只提供安静的预览环境。 */
+    :root{--forest:#123d35;--forest-2:#1f5e4b;--sage:#dce8db;--mist:#f3f6f1;--paper:#fbfcf8;--ink:#17362f;--muted:#6e7d76;--line:#dbe3dc;--gold:#b8985c;--warn:#9c6832;--white:#fff;--shadow:0 18px 48px rgba(20,54,46,.12)}
+    *{box-sizing:border-box;letter-spacing:0}
+    html,body{margin:0;min-height:100%;background:#e9eee9;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+    button{font:inherit;cursor:pointer}
+    button:focus-visible{outline:3px solid rgba(184,152,92,.5);outline-offset:2px}
+    .review-shell{min-height:100vh;display:grid;grid-template-columns:minmax(260px,340px) minmax(360px,430px);gap:48px;align-items:start;justify-content:center;padding:42px 24px;background:radial-gradient(circle at 12% 10%,rgba(255,255,255,.9),transparent 34%),#e9eee9}
+    .review-note{position:sticky;top:42px;padding-top:48px}
+    .review-note .eyebrow{font-size:12px;color:var(--forest-2);letter-spacing:3px}
+    .review-note h1{font-family:STSong,"Songti SC",serif;font-size:42px;font-weight:400;line-height:1.25;margin:16px 0 18px}
+    .review-note>p{font-size:14px;line-height:1.8;color:#52655e;margin:0 0 28px}
+    .principles{border-top:1px solid rgba(23,54,47,.16)}
+    .principles div{padding:16px 0;border-bottom:1px solid rgba(23,54,47,.12);display:grid;grid-template-columns:28px 1fr;gap:12px}
+    .principles b{font-family:Georgia,serif;color:var(--gold);font-weight:400}
+    .principles strong{font-size:14px;font-weight:500;display:block;margin-bottom:4px}
+    .principles span{font-size:12px;color:#6e7d76;line-height:1.6}
+    .source-note{margin-top:24px;font-size:11px!important;color:#7b8983!important}
+
+    /* 手机容器：保持稳定尺寸，内部页面独立滚动并保留微信小程序的触控尺度。 */
+    .phone{width:390px;height:844px;position:relative;overflow:hidden;background:var(--paper);box-shadow:var(--shadow);border-radius:30px}
+    .status{height:26px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;font-size:11px;background:rgba(251,252,248,.96);position:relative;z-index:10}
+    .status span:last-child{display:flex;align-items:center;gap:5px}
+    .status svg{width:13px;height:13px}
+    .viewport{height:758px;overflow-y:auto;scrollbar-width:none;padding-bottom:78px}
+    .viewport::-webkit-scrollbar{display:none}
+    .page{display:none;min-height:100%;background:var(--paper)}
+    .page.is-active{display:block}
+
+    /* 品牌头部：真 Logo + 大留白，不采用传统居中标题栏。 */
+    .brandbar{height:72px;padding:13px 21px 10px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:9px}
+    .brand img{width:38px;height:30px;object-fit:contain}
+    .brand strong{font-family:STSong,"Songti SC",serif;font-size:20px;font-weight:500}
+    .brand small{display:block;margin-top:2px;font-size:8px;letter-spacing:2px;color:#7b8983}
+    .wechat-capsule{width:79px;height:33px;border:1px solid #d7ded8;border-radius:18px;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:space-around;color:#213a34}
+    .wechat-capsule i{width:3px;height:3px;border-radius:50%;background:currentColor;box-shadow:7px 0 currentColor,-7px 0 currentColor}
+    .wechat-capsule span{width:1px;height:17px;background:#d2d8d3}
+    .wechat-capsule svg{width:16px;height:16px}
+
+    /* 首页首屏：编辑式标题与图片错位，任务悬浮在图像转折处。 */
+    .hero-copy{padding:21px 22px 20px;position:relative;min-height:190px}
+    .hero-copy .date{font-size:13px;color:#71817a;margin-bottom:13px}
+    .hero-copy h2{font-family:STSong,"Songti SC",serif;font-size:35px;font-weight:400;line-height:1.28;margin:0;max-width:280px}
+    .hero-copy p{font-size:14px;color:#65776f;margin:12px 0 0}
+    .botanical{position:absolute;right:19px;top:9px;width:72px;height:118px;color:#658c74;opacity:.28;transform:rotate(8deg)}
+    .botanical svg{width:100%;height:100%}
+    .hero-photo{margin:0 18px;height:277px;position:relative;overflow:hidden;border-radius:2px 31px 2px 31px;background:#dce6dc}
+    .hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(13,48,39,.38))}
+    .hero-photo figcaption{position:absolute;left:20px;bottom:19px;z-index:1;color:#fff}
+    .hero-photo figcaption span{font-size:10px;opacity:.85}
+    .hero-photo figcaption strong{font-family:STSong,"Songti SC",serif;display:block;font-size:21px;font-weight:400;margin-top:5px}
+    .daily-task{margin:-18px 31px 0;position:relative;z-index:2;background:#fff;padding:15px 15px 13px;box-shadow:0 13px 32px rgba(26,65,54,.13);display:grid;grid-template-columns:1fr auto;gap:9px;border-top:3px solid var(--gold)}
+    .daily-task span{font-size:9px;color:var(--gold)}
+    .daily-task strong{display:block;font-size:14px;margin:4px 0}
+    .daily-task small{font-size:11px;color:var(--muted);line-height:1.55}
+    .daily-task button{align-self:center;width:46px;height:46px;border:0;border-radius:50%;background:var(--forest);color:#fff;display:grid;place-items:center}
+    .daily-task button svg{width:19px}
+
+    /* AI 入口：使用横向编辑条，不做传统大卡片或机器人头像。 */
+    .ai-entry{margin:25px 22px 0;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;background:transparent;color:var(--ink);width:calc(100% - 44px);text-align:left}
+    .ai-entry>svg{width:22px;color:var(--forest-2)}
+    .ai-entry span{display:flex;flex-direction:column}
+    .ai-entry strong{font-size:13px}
+    .ai-entry small{font-size:11px;color:var(--muted);margin-top:3px}
+    .ai-entry>i{font-style:normal;font-size:18px;color:var(--gold)}
+
+    /* 四项业务：不对称图文结构替代四宫格，同时确保入口清楚。 */
+    .section-title{padding:31px 22px 15px;display:flex;align-items:end;justify-content:space-between}
+    .section-title span{font-size:9px;color:var(--gold);letter-spacing:2px}
+    .section-title h3{font-family:STSong,"Songti SC",serif;font-size:24px;font-weight:400;margin:5px 0 0}
+    .section-title p{font-size:11px;color:var(--muted);margin:0 0 3px}
+    .service-editorial{padding:0 18px 15px;display:grid;grid-template-columns:1.2fr .8fr;grid-template-rows:166px 166px;gap:10px}
+    .service-item{border:0;color:#fff;position:relative;overflow:hidden;text-align:left;padding:0;background:#dce6dc}
+    .service-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+    .service-item:hover img{transform:scale(1.025)}
+    .service-item:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,43,35,.02),rgba(12,43,35,.68))}
+    .service-item>span{position:absolute;left:14px;right:12px;bottom:13px;z-index:1;display:flex;flex-direction:column}
+    .service-item strong{font-family:STSong,"Songti SC",serif;font-size:17px;font-weight:400}
+    .service-item small{font-size:11px;line-height:1.45;opacity:.86;margin-top:3px}
+    .service-item:nth-child(1){grid-row:1/3;border-radius:2px 24px 2px 24px}
+    .service-item:nth-child(2),.service-item:nth-child(3){border-radius:2px 18px 2px 18px}
+    .service-item:nth-child(4){grid-column:1/3;height:84px;border-radius:2px 18px 2px 18px;background:var(--forest);display:grid;grid-template-columns:1fr auto;align-items:center;padding:0 18px}
+    .service-item:nth-child(4):after{display:none}
+    .service-item:nth-child(4)>span{position:static}
+    .service-item:nth-child(4)>svg{width:24px;color:#d1bf91}
+    .service-editorial{grid-template-rows:166px 166px 84px}
+
+    /* 服务进度：细线和文案呈现科技感，避免蓝色发光仪表盘。 */
+    .journey{margin:13px 22px 0;padding:24px 0 8px;border-top:1px solid var(--line)}
+    .journey-head{display:flex;justify-content:space-between;align-items:start}
+    .journey-head span{font-size:9px;color:var(--gold);letter-spacing:2px}
+    .journey-head h3{font-family:STSong,"Songti SC",serif;font-size:20px;font-weight:400;margin:5px 0}
+    .journey-head p{font-size:11px;color:var(--muted);margin:0}
+    .journey-head button{min-height:44px;border:0;background:transparent;color:var(--forest-2);font-size:12px;padding:8px}
+    .journey-line{display:flex;gap:6px;margin:19px 0 8px}
+    .journey-line i{display:block;flex:1;height:3px;background:#d9dfda}
+    .journey-line i.done{background:#6c9681}
+    .journey-line i.current{background:var(--gold)}
+    .journey-labels{display:flex;justify-content:space-between;font-size:11px;color:#78867f}
+    .trust-row{margin:25px 22px 34px;padding:17px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:31px 1fr auto;gap:10px;align-items:center}
+    .trust-row>svg{width:23px;color:var(--gold)}
+    .trust-row span{display:flex;flex-direction:column}
+    .trust-row strong{font-size:12px}
+    .trust-row small{font-size:11px;color:var(--muted);margin-top:3px}
+    .trust-row button{min-height:44px;border:0;background:transparent;color:var(--forest-2);font-size:11px;padding:8px}
+
+    /* 内页共用：保持品牌式排版，而不是传统列表后台感。 */
+    .subhead{height:62px;padding:0 18px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;border-bottom:1px solid var(--line)}
+    .subhead h2{text-align:center;font-family:STSong,"Songti SC",serif;font-size:18px;font-weight:500;margin:0}
+    .subhead button{width:44px;height:44px;border:0;background:transparent;color:var(--ink);display:grid;place-items:center}
+    .subhead button svg{width:21px}
+    .archive-hero,.service-hero{margin:0 18px;padding:28px 20px;min-height:215px;background:var(--forest);color:#fff;position:relative;overflow:hidden;border-radius:2px 28px 2px 28px}
+    .archive-hero:after,.service-hero:after{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(255,255,255,.15);border-radius:50%;right:-65px;top:-55px;box-shadow:0 0 0 24px rgba(255,255,255,.025),0 0 0 50px rgba(255,255,255,.018)}
+    .archive-hero span,.service-hero span{font-size:9px;color:#d1bf91;letter-spacing:2px}
+    .archive-hero h2,.service-hero h2{font-family:STSong,"Songti SC",serif;font-size:27px;font-weight:400;line-height:1.4;margin:11px 0}
+    .archive-hero p,.service-hero p{font-size:12px;color:#d1dad6;line-height:1.65;max-width:270px}
+    .archive-hero .numbers{position:absolute;bottom:19px;right:18px;z-index:1;text-align:right}
+    .archive-hero .numbers strong{font-family:Georgia,serif;font-size:30px;font-weight:400;color:#d7c18d}
+    .archive-hero .numbers small{display:block;font-size:8px;color:#bdcbc5}
+    .trend{padding:27px 22px 15px}
+    .trend-top{display:flex;justify-content:space-between;align-items:end}
+    .trend-top span{font-size:12px;color:var(--muted)}
+    .trend-top strong{font-family:Georgia,serif;font-size:25px;font-weight:400}
+    .trend-top small{font-size:11px;color:var(--forest-2)}
+    .trend svg{width:100%;height:145px;margin-top:9px}
+    .trend .grid{stroke:#dde4de;stroke-width:1}.trend .line{fill:none;stroke:var(--forest-2);stroke-width:3;stroke-linecap:round}.trend circle{fill:var(--paper);stroke:var(--gold);stroke-width:3}.trend text{font-size:9px;fill:#849089}
+    .attention-list{padding:0 22px}
+    .attention-item{min-height:73px;padding:14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+    .attention-item>svg{width:22px;color:var(--warn)}
+    .attention-item span{display:flex;flex-direction:column}
+    .attention-item strong{font-size:12px}
+    .attention-item small{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}
+    .attention-item>i{font-style:normal;color:var(--gold)}
+    .credential{margin:18px 22px 32px;border:1px solid #cdbb91;padding:16px;position:relative}
+    .credential:before{content:"审";width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-family:STSong,"Songti SC",serif;color:var(--gold);float:left;margin-right:10px}
+    .credential strong{font-size:13px}.credential p{font-size:11px;color:var(--muted);line-height:1.6;margin:4px 0 14px}
+    .credential button{width:100%;height:44px;border:1px solid var(--forest-2);background:transparent;color:var(--forest-2);font-size:11px}
+    .service-hero .percent{font-family:Georgia,serif;font-size:39px;color:#d7c18d;margin-top:22px}
+    .service-hero .percent small{font-family:"Microsoft YaHei";font-size:9px;color:#bdcbc5;margin-left:6px}
+    .next-service{margin:20px 22px 6px;padding:0 0 20px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:62px 1fr;gap:14px}
+    .next-service time{font-family:Georgia,serif;font-size:21px;color:var(--gold)}
+    .next-service time small{display:block;font-family:"Microsoft YaHei";font-size:9px;color:var(--muted);margin-top:4px}
+    .next-service div{display:flex;flex-direction:column}
+    .next-service span{font-size:11px;color:var(--forest-2)}.next-service strong{font-size:14px;margin:4px 0}.next-service small{font-size:11px;color:var(--muted)}
+    .service-timeline{list-style:none;padding:0 22px;margin:14px 0}
+    .service-timeline li{min-height:62px;display:grid;grid-template-columns:24px 1fr auto;gap:9px;align-items:center;position:relative}
+    .service-timeline li:not(:last-child):after{content:"";position:absolute;left:8px;top:40px;height:44px;border-left:1px solid #cdd7d0}
+    .service-timeline svg{width:17px;color:#99a49e;z-index:1;background:var(--paper)}
+    .service-timeline .done svg,.service-timeline .current svg{color:var(--forest-2)}
+    .service-timeline .current{background:linear-gradient(90deg,rgba(220,232,219,.7),transparent);margin:0 -10px;padding:0 10px}
+    .service-timeline span{display:flex;flex-direction:column}.service-timeline strong{font-size:13px}.service-timeline small,.service-timeline time{font-size:11px;color:var(--muted)}
+    .human-button{margin:16px 22px 35px;width:calc(100% - 44px);height:48px;border:0;background:var(--forest);color:#fff;display:flex;justify-content:center;align-items:center;gap:8px;font-size:12px}
+    .human-button svg{width:18px}
+
+    /* AI 抽屉：展示“整理与导航、人工兜底”的真实职责边界。 */
+    .ai-drawer{position:absolute;inset:0;z-index:30;background:rgba(13,39,33,.36);display:none;align-items:end}
+    .ai-drawer.is-open{display:flex}
+    .ai-panel{width:100%;background:#fbfcf8;border-radius:28px 28px 0 0;padding:19px 20px 24px;box-shadow:0 -16px 45px rgba(13,39,33,.18)}
+    .ai-panel-head{display:flex;justify-content:space-between;align-items:center}
+    .ai-panel-head span{font-size:9px;color:var(--gold);letter-spacing:2px}.ai-panel-head h3{font-family:STSong,"Songti SC",serif;font-size:21px;font-weight:400;margin:5px 0}.ai-close{width:44px;height:44px;border:0;background:transparent;color:var(--ink)}
+    .ai-message{padding:14px;background:#edf3ec;font-size:13px;line-height:1.7;color:#40584f;margin:10px 0}
+    .ai-options{display:flex;flex-wrap:wrap;gap:8px}.ai-options button{min-height:44px;border:1px solid #cbd8d0;background:transparent;color:var(--forest);padding:8px 13px;font-size:12px;border-radius:22px}
+    .ai-boundary{display:flex;gap:8px;margin-top:16px;font-size:11px;line-height:1.6;color:var(--muted)}.ai-boundary svg{width:17px;flex:none;color:var(--forest-2)}
+
+    /* 轻提示：为尚未接入真实后端的演示入口提供明确反馈，避免按钮点击后毫无响应。 */
+    .demo-toast{position:absolute;left:22px;right:22px;bottom:76px;z-index:50;padding:12px 15px;background:rgba(13,39,33,.94);color:#fff;font-size:12px;line-height:1.55;box-shadow:0 12px 28px rgba(13,39,33,.2);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+    .demo-toast.is-visible{opacity:1;transform:translateY(0)}
+
+    /* 底部导航：五项固定业务入口，选中态使用图标与文字双重表达。 */
+    .tabbar{position:absolute;left:0;right:0;bottom:0;height:60px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:20}
+    .tabbar button{border:0;background:transparent;color:#6f7d77;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;font-size:10px}
+    .tabbar svg{width:18px;height:18px}
+    .tabbar button.is-active{color:var(--forest-2);font-weight:500}
+    .tabbar button.is-active:after{content:"";width:3px;height:3px;border-radius:50%;background:var(--gold);position:absolute;margin-top:41px}
+    /* 商城：使用策展式图片和证据说明，不做密集商品瀑布流。 */
+    .store-hero{height:250px;margin:0 18px;position:relative;overflow:hidden;border-radius:2px 28px 2px 28px;color:#fff}
+    .store-hero img{width:100%;height:100%;object-fit:cover;display:block}
+    .store-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,38,31,.05),rgba(10,38,31,.75))}
+    .store-hero div{position:absolute;left:19px;right:19px;bottom:18px;z-index:1}
+    .store-hero span{font-size:9px;color:#e0cfa3;letter-spacing:2px}
+    .store-hero h2{font-family:STSong,"Songti SC",serif;font-size:25px;font-weight:400;margin:7px 0}
+    .store-hero p{font-size:11px;line-height:1.55;color:#e3ebe7;margin:0;max-width:295px}
+    .store-categories{padding:8px 22px 0}
+    .store-category{width:100%;min-height:92px;padding:15px 0;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);display:grid;grid-template-columns:58px 1fr 44px;gap:12px;align-items:center;text-align:left}
+    .store-category .visual{width:58px;height:58px;border-radius:50%;overflow:hidden;background:var(--sage)}
+    .store-category .visual img{width:100%;height:100%;object-fit:cover}
+    .store-category>span{display:flex;flex-direction:column}
+    .store-category strong{font-family:STSong,"Songti SC",serif;font-size:17px;font-weight:400}
+    .store-category small{font-size:11px;line-height:1.5;color:var(--muted);margin-top:4px}
+    .store-category>svg{width:18px;color:var(--gold);justify-self:end}
+    .evidence-band{margin:23px 22px 32px;padding:19px;background:var(--forest);color:#fff;border-radius:2px 22px 2px 22px}
+    .evidence-band>span{font-size:9px;color:#d7c18d;letter-spacing:2px}
+    .evidence-band h3{font-family:STSong,"Songti SC",serif;font-size:20px;font-weight:400;margin:7px 0 13px}
+    .evidence-points{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .evidence-points div{border-top:1px solid rgba(255,255,255,.22);padding-top:10px;display:flex;flex-direction:column}
+    .evidence-points svg{width:18px;color:#d7c18d;margin-bottom:7px}
+    .evidence-points strong{font-size:10px}
+    .evidence-points small{font-size:9px;line-height:1.45;color:#c4d0cb;margin-top:3px}
+
+    /* 我的：以会员关系和当前服务为核心，资金、订单与隐私入口保持清晰分离。 */
+    .profile-hero{margin:0 18px;padding:24px 20px;background:var(--forest);color:#fff;border-radius:2px 28px 2px 28px;position:relative;overflow:hidden}
+    .profile-hero:after{content:"";position:absolute;width:145px;height:145px;border:1px solid rgba(255,255,255,.14);border-radius:50%;right:-58px;top:-54px;box-shadow:0 0 0 22px rgba(255,255,255,.025)}
+    .profile-brand{display:flex;align-items:center;gap:11px;position:relative;z-index:1}
+    .profile-brand img{width:44px;height:35px;object-fit:contain}
+    .profile-brand span{display:flex;flex-direction:column}
+    .profile-brand small{font-size:9px;color:#d7c18d;letter-spacing:2px}
+    .profile-brand strong{font-family:STSong,"Songti SC",serif;font-size:22px;font-weight:400;margin-top:3px}
+    .profile-hero>p{font-size:11px;color:#cad5d0;margin:17px 0 0;position:relative;z-index:1}
+    .member-line{margin:18px 22px 0;padding:0 0 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:end}
+    .member-line span{display:flex;flex-direction:column}
+    .member-line small{font-size:10px;color:var(--gold)}
+    .member-line strong{font-family:STSong,"Songti SC",serif;font-size:19px;font-weight:400;margin-top:5px}
+    .member-line button{min-height:44px;border:0;background:transparent;color:var(--forest-2);font-size:11px;padding:8px}
+    .profile-actions{margin:0 22px;display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+    .profile-actions button{min-height:94px;border:0;background:transparent;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px}
+    .profile-actions svg{width:21px;color:var(--forest-2)}
+    .profile-actions button+button{border-left:1px solid var(--line)}
+    .current-care{margin:24px 22px 0;padding:18px 0;border-top:3px solid var(--gold);display:grid;grid-template-columns:1fr auto;gap:8px}
+    .current-care>span{font-size:9px;color:var(--gold);letter-spacing:2px;grid-column:1/-1}
+    .current-care div{display:flex;flex-direction:column}
+    .current-care strong{font-family:STSong,"Songti SC",serif;font-size:17px;font-weight:400}
+    .current-care small{font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px}
+    .current-care button{width:44px;height:44px;border:0;border-radius:50%;background:var(--forest);color:#fff;display:grid;place-items:center}
+    .current-care button svg{width:18px}
+    .account-list{padding:10px 22px 34px}
+    .account-list button{width:100%;min-height:62px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);display:grid;grid-template-columns:28px 1fr 44px;gap:9px;align-items:center;text-align:left}
+    .account-list button>svg:first-child{width:19px;color:var(--forest-2)}
+    .account-list button>svg:last-child{width:16px;color:var(--gold);justify-self:end}
+    .account-list span{display:flex;flex-direction:column}
+    .account-list strong{font-size:13px}
+    .account-list small{font-size:10px;color:var(--muted);margin-top:3px}
+
+    @media(max-width:820px){body{background:var(--paper)}.review-shell{display:block;padding:0;background:var(--paper)}.review-note{display:none}.phone{width:100%;height:100vh;min-height:680px;border-radius:0;box-shadow:none}.viewport{height:calc(100vh - 86px)}}
+  </style>
+</head>
+<body>
+  <div class="review-shell">
+    <aside class="review-note" aria-label="方案说明">
+      <span class="eyebrow">YUJIAN HEALTH · UI DIRECTION</span>
+      <h1>自然臻享</h1>
+      <p>以生活方式影像建立高级感，以任务、进度和审核痕迹建立专业信任。不是传统健康商城，也不是冷冰冰的医疗系统。</p>
+      <div class="principles">
+        <div><b>01</b><span><strong>生活感在外，专业性在内</strong>首页先让人愿意停留，再用数据来源、人工审核和服务责任建立信任。</span></div>
+        <div><b>02</b><span><strong>行动优先于营销</strong>登录用户第一眼看到今天该做什么，品牌内容不遮挡当前待办。</span></div>
+        <div><b>03</b><span><strong>科技感来自秩序</strong>趋势、版本、进度和状态清楚可查，不依赖大面积荧光色或炫技动效。</span></div>
+      </div>
+      <p class="source-note">视觉依据：访谈中明确的“健康、轻柔、简洁、带一点科技感，不要信息堆叠”；客群以 45–60 岁为主。</p>
+    </aside>
+
+    <section class="phone" aria-label="御健荟客户端自然臻享方案">
+      <div class="status"><span>9:41</span><span><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-medium"></i></span></div>
+      <main class="viewport">
+        <!-- 首页：首页承担品牌、今日行动、AI 导航和四大业务入口。 -->
+        <section class="page is-active" data-page="home">
+          <header class="brandbar">
+            <div class="brand"><img src="premium-assets/yujian-mark.png" alt=""><span><strong>御健荟</strong><small>YUJIAN HEALTH</small></span></div>
+            <div class="wechat-capsule" aria-label="微信小程序菜单"><i></i><span></span><i data-lucide="circle-dot"></i></div>
+          </header>
+          <div class="hero-copy">
+            <div class="date">陈女士，下午好</div>
+            <h2>把健康，<br>过成从容的日常。</h2>
+            <p>看清变化，也知道下一步怎么做</p>
+            <div class="botanical"><i data-lucide="sprout"></i></div>
+          </div>
+          <figure class="hero-photo">
+            <img src="premium-assets/yujian-wellness-hero-stock-v1.webp" alt="自然光下安静舒适的健康管理会客空间">
+            <figcaption><span>HEALTH IN RHYTHM</span><strong>在适合自己的节奏里，慢慢变好</strong></figcaption>
+          </figure>
+          <article class="daily-task">
+            <div><span>今日最重要的一件事</span><strong>确认体检报告最后 3 项信息</strong><small>完成后进入专业审核，预计 1 个工作日内反馈</small></div>
+            <button type="button" data-go="archive" aria-label="进入健康档案确认"><i data-lucide="arrow-up-right"></i></button>
+          </article>
+          <button class="ai-entry" type="button" data-open-ai>
+            <i data-lucide="sparkles"></i><span><strong>AI 健康导航员</strong><small>先帮您理清问题，需要时转人工顾问</small></span><i>→</i>
+          </button>
+          <div class="section-title"><div><span>FOUR WAYS TO CARE</span><h3>从需要出发</h3></div><p>四类服务，各有自己的路径</p></div>
+          <div class="service-editorial">
+            <button class="service-item" type="button" data-go="service"><img src="premium-assets/yujian-daily-care-stock-v1.webp" alt="成熟用户进行温和日常运动"><span><strong>健康管理</strong><small>计划、随访与阶段复盘</small></span></button>
+            <button class="service-item" type="button" data-go="store"><img src="premium-assets/yujian-selection-stock-v1.webp" alt="经过认真选择的自然健康食材"><span><strong>健康食材</strong><small>来源与认证清楚可查</small></span></button>
+            <button class="service-item" type="button" data-go="store"><img src="premium-assets/yujian-device-stock-v1.webp" alt="家庭日常使用的健康监测设备"><span><strong>健康臻选</strong><small>设备、营养与检测</small></span></button>
+            <button class="service-item" type="button" data-go="service"><span><strong>就医协助</strong><small>提交需求，由人工联系并说明可协助范围</small></span><i data-lucide="arrow-up-right"></i></button>
+          </div>
+          <section class="journey">
+            <div class="journey-head"><div><span>YOUR HEALTH JOURNEY</span><h3>服务有序，进展可见</h3><p>控糖与体重管理 · 第 4 周</p></div><button type="button" data-go="service">查看全部</button></div>
+            <div class="journey-line" aria-label="服务进度 60%"><i class="done"></i><i class="done"></i><i class="current"></i><i></i><i></i></div>
+            <div class="journey-labels"><span>资料</span><span>审核</span><span>执行中</span><span>复查</span><span>归档</span></div>
+          </section>
+          <section class="trust-row"><i data-lucide="badge-check"></i><span><strong>专业审核过程可追溯</strong><small>资料、版本、审核人员与时间均有记录</small></span><button type="button" data-go="archive">查看凭证</button></section>
+        </section>
+
+        <!-- 健康档案：首页视觉延续至数据页，突出趋势而非制造诊断结论。 -->
+        <section class="page" data-page="archive">
+          <header class="subhead"><button type="button" data-go="home" aria-label="返回首页"><i data-lucide="chevron-left"></i></button><h2>健康档案</h2><button type="button" aria-label="查看授权" data-feedback="这里将展示健康资料授权范围、有效期和撤回记录。"><i data-lucide="shield-check"></i></button></header>
+          <article class="archive-hero"><span>ANNUAL HEALTH REVIEW · 2026</span><h2>变化正在发生，<br>两项指标值得继续留意。</h2><p>综合 3 年体检资料与近期随访记录，仅作健康管理参考，不替代医学诊断。</p><div class="numbers"><strong>13</strong><small>项指标已对比</small></div></article>
+          <section class="trend">
+            <div class="trend-top"><span>体重 · 三年趋势</span><div><strong>68.1</strong> kg</div><small>较 2024 年下降 2.7 kg</small></div>
+            <svg viewBox="0 0 330 135" role="img" aria-label="2024年至2026年体重缓慢下降趋势"><path class="grid" d="M12 22H318M12 66H318M12 108H318"></path><path class="line" d="M18 29C78 34 104 53 155 61S245 75 312 91"></path><circle cx="18" cy="29" r="5"></circle><circle cx="155" cy="61" r="5"></circle><circle cx="312" cy="91" r="5"></circle><text x="12" y="130">2024</text><text x="145" y="130">2025</text><text x="292" y="130">2026</text></svg>
+          </section>
+          <div class="section-title"><div><span>NEEDS ATTENTION</span><h3>需要留意</h3></div><p>2 项变化待人工确认</p></div>
+          <div class="attention-list">
+            <div class="attention-item"><i data-lucide="droplets"></i><span><strong>空腹血糖连续上升</strong><small>建议人工复核采血条件与既往数据</small></span><i>→</i></div>
+            <div class="attention-item"><i data-lucide="gauge"></i><span><strong>血压波动较大</strong><small>建议补充家庭连续测量记录</small></span><i>→</i></div>
+          </div>
+          <article class="credential"><strong>专业审核凭证</strong><p>当前版本 V2026.10.22 正在等待客户校对；完成后才进入专业审核并显示审核人员。</p><button type="button" data-feedback="审核链将按时间展示资料版本、审核人员、审核结论和修改记录。">查看完整审核链</button></article>
+        </section>
+
+        <!-- 服务页：围绕下一行动、责任人和真实状态组织，不使用营销式会员大卡。 -->
+        <section class="page" data-page="service">
+          <header class="subhead"><button type="button" data-go="home" aria-label="返回首页"><i data-lucide="chevron-left"></i></button><h2>服务进度</h2><button type="button" aria-label="联系顾问" data-feedback="已记录联系需求，正式版本将通知专属健康顾问承接。"><i data-lucide="headphones"></i></button></header>
+          <article class="service-hero"><span>HEALTH MANAGEMENT · WEEK 04</span><h2>稳稳向前，<br>每一步都有人承接。</h2><p>控糖与体重管理方案 · 当前处于方案执行阶段</p><div class="percent">60%<small>总进度</small></div></article>
+          <article class="next-service"><time>10.25<small>星期日 · 15:00</small></time><div><span>下一项服务</span><strong>线上阶段随访</strong><small>健康管理师 王老师 · 约 30 分钟</small></div></article>
+          <div class="section-title"><div><span>SERVICE RECORD</span><h3>服务记录</h3></div><p>状态由真实业务动作更新</p></div>
+          <ol class="service-timeline">
+            <li class="done"><i data-lucide="check-circle-2"></i><span><strong>资料收集</strong><small>体检报告与健康问卷已确认</small></span><time>10/18</time></li>
+            <li class="done"><i data-lucide="check-circle-2"></i><span><strong>专业审核</strong><small>审核记录与版本可追溯</small></span><time>10/20</time></li>
+            <li class="current"><i data-lucide="activity"></i><span><strong>方案执行</strong><small>饮食记录 5/7 天，运动 3/4 次</small></span><time>进行中</time></li>
+            <li><i data-lucide="circle"></i><span><strong>阶段复查</strong><small>完成随访后安排</small></span><time>待开始</time></li>
+            <li><i data-lucide="circle"></i><span><strong>总结归档</strong><small>结论由专业人员确认</small></span><time>待开始</time></li>
+          </ol>
+          <button class="human-button" type="button" data-feedback="已记录联系需求，正式版本将通知专属健康顾问承接。"><i data-lucide="message-circle"></i>联系人工健康顾问</button>
+        </section>
+
+        <!-- 商城页：只展示已经确认的类目与审核原则，不虚构价格、库存或医疗功效。 -->
+        <section class="page" data-page="store">
+          <header class="subhead"><button type="button" data-go="home" aria-label="返回首页"><i data-lucide="chevron-left"></i></button><h2>健康臻选</h2><button type="button" aria-label="购物袋" data-feedback="购物袋为空；正式版本将展示已选商品、服务责任与售后说明。"><i data-lucide="shopping-bag"></i></button></header>
+          <article class="store-hero"><img src="premium-assets/yujian-selection-stock-v1.webp" alt="经过认真选择的自然健康食材"><div><span>SELECTED WITH CARE</span><h2>先看依据，再做选择。</h2><p>从日常食材到家庭健康设备，来源、适用范围与服务责任都应清楚呈现。</p></div></article>
+          <div class="section-title"><div><span>CURATED CATEGORIES</span><h3>为日常认真选择</h3></div><p>点击了解审核重点</p></div>
+          <div class="store-categories">
+            <button class="store-category" type="button" data-feedback="健康食材详情将优先展示产地、认证材料、配送与售后责任。"><span class="visual"><img src="premium-assets/yujian-selection-stock-v1.webp" alt="健康食材"></span><span><strong>健康食材</strong><small>产地、认证、配送与售后责任</small></span><i data-lucide="arrow-up-right"></i></button>
+            <button class="store-category" type="button" data-feedback="设备详情将优先展示备案信息、适用人群、使用边界与售后责任。"><span class="visual"><img src="premium-assets/yujian-device-stock-v1.webp" alt="家庭健康设备"></span><span><strong>家庭健康设备</strong><small>备案信息、适用人群与使用边界</small></span><i data-lucide="arrow-up-right"></i></button>
+            <button class="store-category" type="button" data-feedback="检测与营养服务将优先展示机构资质、限制条件和人工咨询入口。"><span class="visual"><img src="premium-assets/yujian-daily-care-stock-v1.webp" alt="健康检测与管理服务场景"></span><span><strong>检测与营养臻选</strong><small>机构资质、限制条件与人工咨询</small></span><i data-lucide="arrow-up-right"></i></button>
+          </div>
+          <section class="evidence-band"><span>TRUST BEFORE CHOICE</span><h3>每一项公开内容，都应有据可查</h3><div class="evidence-points"><div><i data-lucide="scan-search"></i><strong>来源可查</strong><small>主体与材料</small></div><div><i data-lucide="badge-check"></i><strong>审核有效</strong><small>版本与期限</small></div><div><i data-lucide="message-circle"></i><strong>有人承接</strong><small>咨询与售后</small></div></div></section>
+        </section>
+
+        <!-- 我的：分别承接会员、服务、资金、订单和资料授权，避免概念混在一起。 -->
+        <section class="page" data-page="profile">
+          <header class="subhead"><span></span><h2>我的</h2><button type="button" aria-label="设置" data-feedback="设置页将提供通知、账号安全和适老化显示选项。"><i data-lucide="settings"></i></button></header>
+          <article class="profile-hero"><div class="profile-brand"><img src="premium-assets/yujian-mark.png" alt=""><span><small>YUJIAN MEMBER</small><strong>陈女士，下午好</strong></span></div><p>已陪伴您 28 天 · 专属健康顾问 王老师</p></article>
+          <section class="member-line"><span><small>会员服务中</small><strong>让每次服务都有记录</strong></span><button type="button" data-feedback="会员权益将展示服务次数、有效期、已使用记录与责任说明。">查看权益</button></section>
+          <div class="profile-actions">
+            <button type="button" data-go="archive"><i data-lucide="folder-heart"></i><span>健康档案</span></button>
+            <button type="button" data-go="service"><i data-lucide="calendar-check"></i><span>服务预约</span></button>
+            <button type="button" data-feedback="订单页将按待确认、进行中、已完成和售后状态分类展示。"><i data-lucide="receipt-text"></i><span>我的订单</span></button>
+          </div>
+          <article class="current-care"><span>CURRENT CARE</span><div><strong>控糖与体重管理 · 第 4 周</strong><small>下一次线上随访：10 月 25 日 15:00</small></div><button type="button" data-go="service" aria-label="查看当前服务"><i data-lucide="arrow-up-right"></i></button></article>
+          <div class="account-list">
+            <button type="button" data-feedback="资金明细将把充值、消费与退款分开记录，并支持逐笔核对。"><i data-lucide="wallet-cards"></i><span><strong>储值与资金明细</strong><small>充值、消费与退款分别记录</small></span><i data-lucide="chevron-right"></i></button>
+            <button type="button" data-feedback="隐私与授权页将展示资料用途、可见人员、有效期和撤回入口。"><i data-lucide="shield-check"></i><span><strong>隐私与授权</strong><small>管理健康资料的使用范围</small></span><i data-lucide="chevron-right"></i></button>
+            <button type="button" data-feedback="已记录联系需求，正式版本将通知专属健康顾问承接。"><i data-lucide="headphones"></i><span><strong>联系人工顾问</strong><small>复杂健康问题由人工继续承接</small></span><i data-lucide="chevron-right"></i></button>
+          </div>
+        </section>
+      </main>
+
+      <!-- AI 面板：演示职责边界和人工承接，不输出疾病判断。 -->
+      <aside class="ai-drawer" aria-hidden="true">
+        <div class="ai-panel">
+          <div class="ai-panel-head"><div><span>AI HEALTH NAVIGATOR</span><h3>今天想先了解什么？</h3></div><button class="ai-close" type="button" aria-label="关闭"><i data-lucide="x"></i></button></div>
+          <div class="ai-message" aria-live="polite">我可以帮您整理体检资料、介绍服务、查看进度或预约顾问。涉及疾病、治疗和最终方案时，我会转给人工专业人员。</div>
+          <div class="ai-options"><button type="button">看看报告变化</button><button type="button">今天要做什么</button><button type="button">了解健康管理</button><button type="button">联系人工顾问</button></div>
+          <div class="ai-boundary"><i data-lucide="shield-check"></i><span>AI 提供整理与导航，不作疾病诊断、治疗建议或用药调整；紧急情况请及时就医或拨打急救电话。</span></div>
+        </div>
+      </aside>
+
+      <!-- 演示反馈：用于说明尚未连接后端的入口在正式产品中的下一步行为。 -->
+      <div class="demo-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+      <nav class="tabbar" aria-label="客户端主导航">
+        <button class="is-active" type="button" data-go="home"><i data-lucide="house"></i><span>首页</span></button>
+        <button type="button" data-go="archive"><i data-lucide="folder-heart"></i><span>健康档案</span></button>
+        <button type="button" data-go="service"><i data-lucide="clipboard-check"></i><span>服务</span></button>
+        <button type="button" data-go="store"><i data-lucide="shopping-bag"></i><span>商城</span></button>
+        <button type="button" data-go="profile"><i data-lucide="user-round"></i><span>我的</span></button>
+      </nav>
+    </section>
+  </div>
+
+  <script>
+    // 初始化图标并统一处理页面、AI 抽屉和底部导航状态。
+    lucide.createIcons({attrs:{'stroke-width':1.7}});
+    const phone=document.querySelector('.phone');
+    const viewport=document.querySelector('.viewport');
+    const drawer=document.querySelector('.ai-drawer');
+    // 获取统一轻提示容器，确保所有展示型入口使用一致反馈。
+    const toast=document.querySelector('.demo-toast');
+    // 保存关闭计时器，连续点击时重新计时，避免提示提前消失。
+    let toastTimer;
+    // 展示业务反馈并在三秒后自动收起，不改变页面的真实业务状态。
+    function showToast(message){toast.textContent=message;toast.classList.add('is-visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('is-visible'),3000)}
+    function showPage(name){document.querySelectorAll('.page').forEach(page=>page.classList.toggle('is-active',page.dataset.page===name));document.querySelectorAll('.tabbar [data-go]').forEach(button=>button.classList.toggle('is-active',button.dataset.go===name));viewport.scrollTop=0}
+    // 统一处理页面跳转、AI 抽屉与演示反馈，避免多处事件逻辑互相冲突。
+    phone.addEventListener('click',event=>{const route=event.target.closest('[data-go]');if(route){showPage(route.dataset.go);return}if(event.target.closest('[data-open-ai]')){drawer.classList.add('is-open');drawer.setAttribute('aria-hidden','false');return}if(event.target.closest('.ai-close')||event.target===drawer){drawer.classList.remove('is-open');drawer.setAttribute('aria-hidden','true');return}const feedback=event.target.closest('[data-feedback]');if(feedback){showToast(feedback.dataset.feedback)}});
+    document.querySelectorAll('.ai-options button').forEach(button=>button.addEventListener('click',()=>{document.querySelector('.ai-message').textContent=`已收到：“${button.textContent}”。我会先整理相关信息；需要专业判断时，由人工顾问继续承接。`}));
+  </script>
+</body>
+</html>
