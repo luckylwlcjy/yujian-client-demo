@@ -64,9 +64,8 @@
     .hero-copy p{font-size:14px;color:#65776f;margin:12px 0 0}
     .botanical{position:absolute;right:19px;top:9px;width:72px;height:118px;color:#658c74;opacity:.28;transform:rotate(8deg)}
     .botanical svg{width:100%;height:100%}
-    .hero-photo{margin:0 18px;height:277px;position:relative;overflow:hidden;border-radius:2px 31px 2px 31px;background:#dce6dc}
+    .hero-photo{margin:0 18px; /* 主图左右留白与页面主体对齐。 */ height:auto; /* 由原图比例决定高度，避免裁掉图片内文案。 */ aspect-ratio:442/320; /* 与用户参考图裁切比例一致，保证完整显示。 */ position:relative; /* 保留圆角和后续内容定位上下文。 */ overflow:hidden; /* 将圆角外的图像边缘裁切干净。 */ border-radius:2px 31px 2px 31px; /* 延续首页的不对称柔和圆角。 */ background:#dce6dc /* 图片加载前保持低对比自然底色。 */}
     .hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
-    .hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(13,48,39,.38))}
     .hero-photo figcaption{position:absolute;left:20px;bottom:19px;z-index:1;color:#fff}
     .hero-photo figcaption span{font-size:10px;opacity:.85}
     .hero-photo figcaption strong{font-family:STSong,"Songti SC",serif;display:block;font-size:21px;font-weight:400;margin-top:5px}
@@ -76,6 +75,8 @@
     .daily-task small{font-size:11px;color:var(--muted);line-height:1.55}
     .daily-task button{align-self:center;width:46px;height:46px;border:0;border-radius:50%;background:var(--forest);color:#fff;display:grid;place-items:center}
     .daily-task button svg{width:19px}
+    /* 图片文案位于主图下缘，任务卡留出间距，完整呈现主视觉而不遮字。 */
+    .daily-task{margin:12px 31px 0}
 
     /* AI 入口：使用横向编辑条，不做传统大卡片或机器人头像。 */
     .ai-entry{margin:25px 22px 0;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;background:transparent;color:var(--ink);width:calc(100% - 44px);text-align:left}
@@ -284,8 +285,8 @@
             <div class="botanical"><i data-lucide="sprout"></i></div>
           </div>
           <figure class="hero-photo">
-            <img src="premium-assets/yujian-wellness-hero-stock-v1.webp" alt="自然光下安静舒适的健康管理会客空间">
-            <figcaption><span>HEALTH IN RHYTHM</span><strong>在适合自己的节奏里，慢慢变好</strong></figcaption>
+            <!-- 参考图内已带有主视觉文案，保持原样完整显示并避免重复叠字。 -->
+            <img src="premium-assets/yujian-home-hero-user-v1.webp" alt="自然光照进健康管理空间，桌上铺着白色毛巾">
           </figure>
           <article class="daily-task">
             <div><span>今日最重要的一件事</span><strong>确认体检报告最后 3 项信息</strong><small>完成后进入专业审核，预计 1 个工作日内反馈</small></div>
